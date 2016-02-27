@@ -154,8 +154,15 @@ describe 'cassandra class' do
       before      => Class['::cassandra::opscenter']
     }
 
+    if $::operatingsystem == 'Debian' and $::operatingsystemmajrelease == 8 {
+        $service_systemd = true
+    } else {
+        $service_systemd = false
+    }
+
     class { '::cassandra::opscenter':
-      config_purge => true
+      config_purge    => true,
+      service_systemd => $service_systemd
     }
 
     cassandra::opscenter::cluster_name { 'Cluster1':
