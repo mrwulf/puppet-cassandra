@@ -1,14 +1,12 @@
+---
 HOSTS:
   debian8:
     roles:
       - master
-      - debian8
     platform: debian-8-amd64
-    image: debian:8
-    hypervisor: docker
-    docker_image_commands:
-      - 'apt-get install -y sudo ufw wget'
-    docker_cmd: '["/sbin/init"]'
-CONFIG: 
+    box : puppetlabs/debian-8.2-64-nocm
+    hypervisor : vagrant
+CONFIG:
   type: foss
-  log_level: debug
+  vagrant_memsize: 2048
+  log_level: notice
