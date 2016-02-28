@@ -19,10 +19,13 @@ describe 'cassandra class' do
   cassandra_install_pp = <<-EOS
     if $::osfamily == 'RedHat' and $::operatingsystemmajrelease == 7 {
         $service_systemd = true
+        $cassandra_9822 = false
     } elsif $::operatingsystem == 'Debian' and $::operatingsystemmajrelease == 8 {
-        $service_systemd = true
+        $service_systemd = false
+        $cassandra_9822 = false
     } else {
         $service_systemd = false
+        $cassandra_9822 = true
     }
 
     if $::osfamily == 'RedHat' {
@@ -33,7 +36,7 @@ describe 'cassandra class' do
 
     class { 'cassandra':
       package_ensure              => $version,
-      cassandra_9822              => true,
+      cassandra_9822              => $cassandra_9822,
       commitlog_directory_mode    => '0770',
       data_file_directories_mode  => '0770',
       saved_caches_directory_mode => '0770',
@@ -62,12 +65,21 @@ describe 'cassandra class' do
 
     file { '/var/lib/cassandra/commitlog':
       ensure => directory,
+      owner  => 'cassandra',
+      group  => 'cassandra',
+      mode   => '0770'
     } ->
     file { '/var/lib/cassandra/caches':
       ensure => directory,
+      owner  => 'cassandra',
+      group  => 'cassandra',
+      mode   => '0770'
     } ->
     file { $data_dirs:
       ensure => directory,
+      owner  => 'cassandra',
+      group  => 'cassandra',
+      mode   => '0770'
     } ->
     class { 'cassandra':
       package_ensure              => $version,
@@ -96,6 +108,7 @@ describe 'cassandra class' do
     }
 
     class { 'cassandra':
+      package_ensure              => $version,
       cassandra_9822              => true,
       commitlog_directory_mode    => '0770',
       data_file_directories_mode  => '0770',
@@ -118,6 +131,12 @@ describe 'cassandra class' do
   end
 
   datastax_agent_install_pp = <<-EOS
+    if $::osfamily == 'RedHat' {
+        $version = '2.2.4-1'
+    } else {
+        $version = '2.2.4'
+    }
+
     if $::osfamily == 'RedHat' and $::operatingsystemmajrelease == 7 {
         $service_systemd = true
     } elsif $::operatingsystem == 'Debian' and $::operatingsystemmajrelease == 8 {
@@ -127,6 +146,7 @@ describe 'cassandra class' do
     }
 
     class { 'cassandra':
+      package_ensure              => $version,
       cassandra_9822              => true,
       commitlog_directory_mode    => '0770',
       data_file_directories_mode  => '0770',
@@ -155,7 +175,7 @@ describe 'cassandra class' do
     }
 
     if $::operatingsystem == 'Debian' and $::operatingsystemmajrelease == 8 {
-        $service_systemd = true
+        $service_systemd = false
     } else {
         $service_systemd = false
     }
@@ -181,7 +201,14 @@ describe 'cassandra class' do
   end
 
   firewall_config_pp = <<-EOS
+    if $::osfamily == 'RedHat' {
+        $version = '2.2.4-1'
+    } else {
+        $version = '2.2.4'
+    }
+
     class { 'cassandra':
+      package_ensure              => $version,
       cassandra_9822              => true,
       commitlog_directory_mode    => '0770',
       data_file_directories_mode  => '0770',
@@ -270,12 +297,12 @@ describe 'cassandra class' do
   #   end
   # end
 
-  describe '########### Gather service information (when in debug mode).' do
-    it 'Show the cassandra system log.' do
-      shell('grep -v \'^INFO\' /var/log/cassandra/system.log')
-    end
-    it 'Kernel log.' do
-      shell('dmesg')
-    end
-  end
+  # describe '########### Gather service information (when in debug mode).' do
+  #  it 'Show the cassandra system log.' do
+  #    shell('grep -v \'^INFO\' /var/log/cassandra/system.log')
+  #  end
+  #  it 'Kernel log.' do
+  #    shell('dmesg')
+  #  end
+  # end
 end
