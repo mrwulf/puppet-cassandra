@@ -1,0 +1,16 @@
+---
+#############################################################################
+# Most of our beaker acceptance tests run on Docker, but it is sometimes
+# useful to have a full VM for troubleshooting.
+#############################################################################
+HOSTS:
+  debian8:
+    roles:
+      - master
+    platform: debian-8-amd64
+    box : puppetlabs/debian-8.2-64-nocm
+    hypervisor : vagrant
+CONFIG:
+  type: foss
+  vagrant_memsize: 2048
+  log_level: notice
