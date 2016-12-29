@@ -1,37 +1,43 @@
 source ENV['GEM_SOURCE'] || 'https://rubygems.org'
+puppetversion = ENV.key?('PUPPET_VERSION') ? ENV['PUPPET_VERSION'] : ['>= 3.8']
 
-puppetversion = ENV['PUPPET_GEM_VERSION']
-
-if puppetversion
-  gem 'puppet', puppetversion, require: false
-else
-  gem 'puppet', require: false
-end
-
-gem 'facter', '>= 1.7.0'
-
-group :system_tests do
-  gem 'backports',              '3.6.8'
-  gem 'beaker',                 '2.33.0'
-  gem 'beaker-rspec',           require: false
+group :test do
   gem 'coveralls',              require: false
-  gem 'docker-api',             require: false
-  gem 'fog',                    require: false
-  gem 'fog-google',             '<= 0.0.9'
-  gem 'google-api-client',      '<= 0.9.4'
+  gem 'facter',                 '>= 1.7.0'
+  gem 'git',                    '1.3.0'
   gem 'hiera',                  require: false
+  gem 'httparty',               require: false
   gem 'metadata-json-lint',     require: false
-  gem 'pry',                    require: false
+  gem 'puppet',                 puppetversion
   gem 'puppet-blacksmith',      require: false
   gem 'puppet-lint',            require: false
+  gem 'puppet-strings',         require: false
   gem 'puppetlabs_spec_helper', require: false
-  gem 'rake',                   '<= 10.5.0'
-  gem 'rspec_junit_formatter',  '0.2.2'
-  gem 'rspec-puppet',           '<= 2.3.2'
+  gem 'rspec-puppet',           '>= 2.3.2'
   gem 'rspec-puppet-utils',     require: false
-  gem 'rubocop',                require: false
-  gem 'serverspec',             require: false
-  gem 'spdx-licenses',          '<= 1.0.0'
+  gem 'rspec_junit_formatter',  require: false
+  gem 'rubocop-rspec',          '1.4.1' if RUBY_VERSION < '2.2.0'
   gem 'travis',                 require: false
   gem 'travis-lint',            require: false
+  gem 'yard',                   require: false
+end
+
+group :acceptance do
+  gem 'beaker',                       require: false
+  gem 'beaker-puppet_install_helper', require: false
+  gem 'beaker-rspec',                 require: false
+  gem 'pry',                          require: false
+end
+
+group :development do
+  gem 'notes', '~> 0.1.2'
+end
+
+# rspec must be v2 for ruby 1.8.7
+if RUBY_VERSION >= '1.8.7' && RUBY_VERSION < '1.9'
+  gem 'rake', '~> 10.0'
+  gem 'rspec', '~> 2.0'
+else
+  # rubocop requires ruby >= 1.9
+  gem 'rubocop'
 end

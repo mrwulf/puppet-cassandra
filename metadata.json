@@ -1,6 +1,6 @@
 {
   "name": "locp-cassandra",
-  "version": "1.24.0",
+  "version": "2.2.1",
   "author": "locp",
   "summary": "Installs Cassandra, DataStax Agent & OpsCenter on RHEL/Ubuntu/Debian.",
   "license": "Apache-2.0",
@@ -13,8 +13,7 @@
     "database",
     "datastax",
     "datastax-agent",
-    "nosql",
-    "opscenter"
+    "nosql"
   ],
   "requirements": [
     {
@@ -37,7 +36,7 @@
     },
     {
       "name": "puppetlabs-inifile",
-      "version_requirement": ">= 1.0.0 < 2.0.0"
+      "version_requirement": ">= 1.5.0 < 2.0.0"
     },
     {
       "name": "puppetlabs-stdlib",
@@ -84,7 +83,8 @@
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "12.04",
-        "14.04"
+        "14.04",
+        "16.04"
       ]
     }
   ]
